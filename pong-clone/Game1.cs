@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +12,18 @@ namespace pong_clone
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        Texture2D playerPaddle;
+        Texture2D compPaddle;
+        Texture2D pong;
+
+        Vector2 playerPosition;
+        Vector2 compPosition;
+        Vector2 pongPosition;
+        Vector2 velocity;
+
+        BoxCollider collide = new BoxCollider();
+
 
         public Game1()
         {
@@ -26,7 +39,13 @@ namespace pong_clone
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            Random rand = new Random();
+            int randomNumber = rand.Next(1, 8);
+
+            playerPosition = new Vector2(50, 200);
+            compPosition = new Vector2(750, 200);
+            pongPosition = new Vector2(400, 180);
+            velocity = new Vector2(randomNumber, randomNumber);
 
             base.Initialize();
         }
@@ -40,7 +59,9 @@ namespace pong_clone
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            playerPaddle = Content.Load<Texture2D>("playerPaddle");
+            compPaddle = Content.Load<Texture2D>("enemyPaddle");
+            pong = Content.Load<Texture2D>("pong");
         }
 
         /// <summary>
@@ -49,7 +70,7 @@ namespace pong_clone
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
         /// <summary>
@@ -59,10 +80,22 @@ namespace pong_clone
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            if (state.IsKeyDown(Keys.Up))
+                playerPosition.Y -= 7;
+            if (state.IsKeyDown(Keys.Down))
+                playerPosition.Y += 7;
+            if (state.IsKeyDown(Keys.Right))
+                playerPosition.X += 7;
+            if (state.IsKeyDown(Keys.Left))
+                playerPosition.X -= 7;
+
+            if (collide.CheckBounds(playerPaddle, playerPosition, pong, pongPosition))
+                pong.Dispose();
 
             base.Update(gameTime);
         }
@@ -73,9 +106,13 @@ namespace pong_clone
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(playerPaddle, playerPosition);
+            spriteBatch.Draw(compPaddle, compPosition);
+            spriteBatch.Draw(pong, pongPosition);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
