@@ -13,8 +13,7 @@ namespace pong_clone
     {
         /// <summary>
         /// checks boundary collider of a game object and returns a distance
-        /// </summary>
-        
+        /// </summary>  
         public bool CheckBounds (Texture2D first, Vector2 firstPos, Texture2D second, Vector2 secondPos)
         {
             int firstHeight = first.Height;
@@ -35,5 +34,33 @@ namespace pong_clone
                 return false;
             
         }
+
+        /// <summary>
+        ///  checks for boundary collision and returns a bounce
+        /// </summary>
+        /// <param name="target">object that is collided with Texture2D</param>
+        /// <param name="targetPos">collided target position</param>
+        /// <param name="collider">the collider of the object Texture2D</param>
+        /// <param name="colliderPos">the position of the collider object</param>
+        /// <returns>returns the new position of the collider</returns>
+       public Vector2 BoundaryCollision (Texture2D target, Vector2 targetPos, Texture2D collider, Vector2 colliderPos)
+       {
+            int firstHeight = target.Height;
+            int firstWidth = target.Width;
+            int secondHeight = collider.Height;
+            int secondWidth = collider.Width;
+
+            Rectangle firstRect = new Rectangle((int)targetPos.X, (int)targetPos.Y, firstHeight, firstWidth);
+            Rectangle secondRect = new Rectangle((int)colliderPos.X, (int)colliderPos.Y, secondHeight, secondWidth);
+
+            if (firstRect.Intersects(secondRect))
+            {
+                return new Vector2(colliderPos.X + 10, colliderPos.Y + 10);
+            }    
+            else
+            {
+                return new Vector2(colliderPos.X, colliderPos.Y);
+            }
+       }
     }
 }

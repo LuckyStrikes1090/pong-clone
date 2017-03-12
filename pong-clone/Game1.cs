@@ -94,8 +94,9 @@ namespace pong_clone
             if (state.IsKeyDown(Keys.Left))
                 playerPosition.X -= 7;
 
-            if (collide.CheckBounds(playerPaddle, playerPosition, pong, pongPosition))
-                pong.Dispose();
+            // if (collide.CheckBounds(playerPaddle, playerPosition, pong, pongPosition))
+            //    pong.Dispose();
+            pongPosition = collide.BoundaryCollision(playerPaddle, playerPosition, pong, pongPosition);
 
             base.Update(gameTime);
         }
